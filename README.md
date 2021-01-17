@@ -7,6 +7,17 @@ Adapted from https://github.com/zuvola/flutter_simple_calculator
 
 The idea is that we rely too much on our calculators, so this one will make errors once in a while so that you have to catch them.
 
+## Signing for Google Play Store
+
+`<app dir>/android/key.properties`:
+```
+storePassword=<password from previous step>
+keyPassword=<password from previous step>
+keyAlias=key
+storeFile=<location of the key store file, such as /Users/<user name>/key.jks>
+```
+
+See https://flutter.dev/docs/deployment/android for more info.
 
 ## Getting Started
 
