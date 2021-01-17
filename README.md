@@ -1,6 +1,12 @@
 # wrong_calculator
 
-A calculator that sometimes makes mistakes
+A calculator that sometimes makes mistakes.
+
+Adapted from https://github.com/zuvola/flutter_simple_calculator
+
+
+The idea is that we rely too much on our calculators, so this one will make errors once in a while so that you have to catch them.
+
 
 ## Getting Started
 
