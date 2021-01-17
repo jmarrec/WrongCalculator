@@ -209,13 +209,16 @@ class Calculator {
   /// Maximum number of digits on display.
   final int maximumDigits;
 
+  final double errorprobability;
+  final double errorrange;
+
   /// Create a [Calculator] with [maximumDigits] is 10 and maximumFractionDigits of [numberFormat] is 6.
-  Calculator({maximumDigits = 10})
-      : this.numberFormat(
+  Calculator({errorprobability = 0.20, errorrange = 0.05, maximumDigits = 10})
+      : this.numberFormat(errorprobability, errorrange,
             NumberFormat()..maximumFractionDigits = 6, maximumDigits);
 
   /// Create a [Calculator].
-  Calculator.numberFormat(this.numberFormat, this.maximumDigits)
+  Calculator.numberFormat(this.errorprobability, this.errorrange, this.numberFormat, this.maximumDigits)
       : _expression =
             CalcExpression(zeroDigit: numberFormat.symbols.ZERO_DIGIT),
         _display = CalcDisplay(numberFormat, maximumDigits);
@@ -293,13 +296,14 @@ class Calculator {
       if (add_error) {
         // We're going to introduce errors in the calculation!
 
-        // 1 in 6 chances of having a mistake
-        if (randomGenerator.nextInt(5) == 3) {
+        // nextDouble returns [0, 1], so compare with probability of making an error
+        if (randomGenerator.nextDouble() <= this.errorprobability) {
           print("Let's make it wrong!");
+          print('probability=${this.errorprobability}, errorrange=${this.errorrange}');
           // nextDouble € [0,1]
           // Shift that to [-0.5, 0.5]
-          // Then we divide by 10 and multiply by result, to get [-5%, +5%]
-          double offset = result * (randomGenerator.nextDouble() - 0.5) / 10.0;
+          // Then we multiply by 2 times _errorange, so we get [-e%, +e%]
+          double offset = result * (randomGenerator.nextDouble() - 0.5) * 2 * this.errorrange;
           print('offset: $offset');
           // If integer, then use an integer error
           if (isInteger(result)) {

@@ -17,12 +17,12 @@ class CalcController extends ChangeNotifier {
   String _acLabel = 'AC';
 
   /// Create a [CalcController] with [maximumDigits] is 10 and maximumFractionDigits of [numberFormat] is 6.
-  CalcController({maximumDigits = 10})
-      : _calc = Calculator(maximumDigits: maximumDigits);
+  CalcController(double errorprobability, double errorrange, {maximumDigits = 10})
+      : _calc = Calculator(errorprobability: errorprobability, errorrange: errorrange, maximumDigits: maximumDigits);
 
   /// Create a [Calculator].
-  CalcController.numberFormat(intl.NumberFormat numberFormat, int maximumDigits)
-      : _calc = Calculator.numberFormat(numberFormat, maximumDigits);
+  CalcController.numberFormat(double errorprobability, double errorrange, intl.NumberFormat numberFormat, int maximumDigits)
+      : _calc = Calculator.numberFormat(errorprobability, errorrange, numberFormat, maximumDigits);
 
   /// Display string
   String get display => _calc.displayString;
@@ -223,6 +223,9 @@ class SimpleCalculator extends StatefulWidget {
   /// Maximum number of digits on display.
   final int maximumDigits;
 
+  final double errorprobability;
+  final double errorrange;
+
   /// Controller for calculator.
   final CalcController controller;
 
@@ -237,6 +240,8 @@ class SimpleCalculator extends StatefulWidget {
     this.maximumDigits = 10,
     this.hideSurroundingBorder = false,
     this.controller,
+    this.errorprobability,
+    this.errorrange,
   }) : super(key: key);
 
   @override
@@ -258,9 +263,10 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
         var myLocale = Localizations.localeOf(context);
         var nf = intl.NumberFormat.decimalPattern(myLocale.toLanguageTag())
           ..maximumFractionDigits = 6;
-        _controller = CalcController.numberFormat(nf, widget.maximumDigits);
+        _controller = CalcController.numberFormat(widget.errorprobability, widget.errorrange, nf, widget.maximumDigits);
       } else {
         _controller = CalcController.numberFormat(
+            widget.errorprobability, widget.errorrange,
             widget.numberFormat, widget.maximumDigits);
       }
     } else {
