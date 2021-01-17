@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'app.dart';
 
 void main() => runApp(MyApp());
@@ -38,6 +40,21 @@ class _CalcButtonState extends State<CalcButton> {
   double _currentValue = 0;
   double _errorprobability = 20;
   double _errorrange = 5;
+  SharedPreferences _prefs;
+  static const String errorProbablityPrefKey = 'wrong_calc_probability';
+  static const String errorRangePrefKey = 'wrong_calc_range';
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() => this._prefs = prefs);
+      _loadProbabilityPref();
+      _loadRangePref();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var calc = SimpleCalculator(
@@ -98,6 +115,9 @@ class _CalcButtonState extends State<CalcButton> {
                     _errorprobability = value;
                   });
                 },
+                onChangeEnd: (double value) {
+                  _storeProbabilityPref(value);
+                }
             ),
             const Divider(),
             Text('Error range: [-${_errorrange.round().toString()}%, +${_errorrange.round().toString()}%]'),
@@ -112,8 +132,33 @@ class _CalcButtonState extends State<CalcButton> {
                     _errorrange = value;
                   });
                 },
+                 onChangeEnd: (double value) {
+                  _storeRangePref(value);
+                }
             ),
         ]
     );
   }
+
+
+  void _loadProbabilityPref() {
+    setState(() {
+      this._errorprobability = this._prefs.getDouble(errorProbablityPrefKey) ?? 20.0;
+    });
+  }
+
+  Future<void> _storeProbabilityPref(double value) async {
+    await this._prefs.setDouble(errorProbablityPrefKey, value);
+  }
+
+  void _loadRangePref() {
+    setState(() {
+      this._errorrange = this._prefs.getDouble(errorRangePrefKey) ?? 5.0;
+    });
+  }
+
+  Future<void> _storeRangePref(double value) async {
+    await this._prefs.setDouble(errorRangePrefKey, value);
+  }
+
 }
